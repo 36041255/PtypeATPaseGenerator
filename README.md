@@ -12,12 +12,9 @@ First make sure you have all dependencies installed by running
 pip install -r requirements.txt
 ```
 
-Then you can clone the project:
+Our model is built on Chroma, so you'll need to register for an access token at Chroma Weights.
 
-```
-git clone https://github.com/yongwangCPH/papers/tree/main/2024/PtypeATPaseGeneration
-```
-
+Note: Due to GitHub's file size limitations (<25MB), the code provided here is incomplete. We plan to share the full code on Zenodo.
 # Usage
 
 ~~~python

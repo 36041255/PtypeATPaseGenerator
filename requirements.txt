@@ -1,3 +1,4 @@
+scipy==1.11.4
 generate-chroma
 torch==2.1.1
 pandas

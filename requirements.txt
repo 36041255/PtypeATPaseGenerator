@@ -1,0 +1,6 @@
+generate-chroma
+torch==2.1.1
+pymol-open-source
+pandas
+matplotlib
+numpy

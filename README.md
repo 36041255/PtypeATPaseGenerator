@@ -6,7 +6,7 @@ This approach represents a significant step forward in computational structural 
 
 # Installation
 
-First make sure you have all dependencies installed by running 
+First make sure you have dependencies installed by running 
 
 ```
 pip install -r requirements.txt

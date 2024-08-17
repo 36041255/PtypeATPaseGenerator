@@ -11,6 +11,10 @@ First make sure you have all dependencies installed by running
 ```
 pip install -r requirements.txt
 ```
+You also need to install pymol through conda due to no way to download it through pip.
+```
+conda install conda-forge::pymol-open-source
+```
 
 Our model is built on Chroma, so you'll need to register for an access token at Chroma Weights.
 

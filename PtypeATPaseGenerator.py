@@ -81,7 +81,7 @@ class PtypeATPaseGenerator():
         base_name = os.path.basename(prot_path)
         base_name = "." + base_name
         new_prot_path = dir_path + '/' + base_name
-        ref_path = 'Dataset/PtypeATPasePDBs_Enhanced/1iwo.pdb'
+        ref_path = '1iwo.pdb'
         cmd.load(prot_path,'prot')
         cmd.load(ref_path,'ref')
         cmd.remove("hetatm")

@@ -1,3 +1,26 @@
+# Generating Multi-state Conformations of Ptype ATPases with a Diffusion Model
+
+Understanding and predicting the diverse conformational states of membrane proteins is essential for elucidating their biological functions. Despite advancements in computational methods, accurately capturing these complex structural changes remains a significant challenge. 
+In this study, we introduce a method for predicting diverse functional states of membrane protein conformations using a diffusion model. Our approach integrates forward and backward diffusion processes, incorporating state classifiers and additional conditioners to control the generation gradient of conformational states. We specifically target the P-type ATPases, a key membrane transporter, for which we curated and expanded a structural dataset. By employing a graph neural network with a custom membrane constraint, our model generates precise structures for P-type ATPases across different functional states. 
+This approach represents a significant step forward in computational structural biology and holds great potential for studying the dynamics of other membrane proteins.
+
+# Installation
+
+First make sure you have all dependencies installed by running 
+
+```
+pip install -r requirements.txt
+```
+
+Then you can clone the project:
+
+```
+git clone https://github.com/yongwangCPH/papers/tree/main/2024/PtypeATPaseGeneration
+```
+
+# Usage
+
+~~~python
 # import package
 from PtypeATPaseGenerator import *
 
@@ -32,3 +55,5 @@ ATPase = generator.GenerateMultistate(
                             )
 # Save ATPase
 ATPase.to("saved_path.pdb")
+~~~
+

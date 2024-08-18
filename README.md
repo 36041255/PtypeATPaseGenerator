@@ -15,6 +15,7 @@ You also need to install pymol through conda due to no way to download it throug
 ```
 conda install conda-forge::pymol-open-source
 ```
+Then you should download the corresponding version of pytorch for your cuda through https://pytorch.org/get-started/previous-versions/
 
 Our model is built on Chroma, so you'll need to register for an access token at Chroma Weights.
 

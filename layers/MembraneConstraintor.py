@@ -90,7 +90,6 @@ class MembraneConstraintor(conditioners.Conditioner):
 
         # 使用sigmoid计算满足条件的软条件
         soft_condition = torch.sigmoid(a * (k - quadratic_form_values))
-        print("chi_count",torch.sum((k - quadratic_form_values) > 0).item())
         # 返回平均概率
         probabilities = soft_condition.mean()
         return probabilities
@@ -121,7 +120,6 @@ class MembraneConstraintor(conditioners.Conditioner):
             alpha = self.noise_schedule.alpha(t)[:, None, None, None].to(Xt.device)
             mu = X_align - _Xt/alpha
             loss = self.general_chi_squ_corrected(mu = mu,n_samples= self.chi_num, a = self.chi_a, k = self.expect_rmsd**2,t = t)
-            print("chi prob:",loss)
             loss = torch.log(loss)*(-1)
         return loss
 

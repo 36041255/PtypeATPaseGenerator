@@ -67,32 +67,32 @@ class MembraneConstraintor(conditioners.Conditioner):
             print("substruct grad", grad.norm().item())
         return grad
     
-    def general_chi_squ_corrected(self, mu, k, t ,A = None, n_samples=30000,a=1): #mu(bt,N,4,3) k是阈值      
-        # 应用重参数化技巧生成多元正态分布样本
-        epsilon = torch.randn(n_samples, mu.size(1),mu.size(2), 3).to(mu.device)
-        C = torch.ones(n_samples, mu.size(1)).to(mu.device)
+    def general_chi_squ_corrected(self, mu, k, t, A=None, n_samples=10000, a=0.1):
+        device = mu.device
+        # 使用预计算的常数进行重参数化
+        epsilon = torch.randn(n_samples, mu.size(1), mu.size(2), 3, device=device)
+        C = torch.ones(n_samples, mu.size(1), device=device)
 
-        alpha = self.noise_schedule.alpha(t)[:, None, None, None].to(mu.device)
-        sigma = self.noise_schedule.sigma(t)[:, None, None, None].to(mu.device)
-        samples = mu +  sigma * self.base_distribution._multiply_R(epsilon,C)/alpha
+        # 如果可能，将常数移到循环外部预计算
+        alpha = self.noise_schedule.alpha(t).view(-1, 1, 1, 1).to(device)
+        sigma = self.noise_schedule.sigma(t).view(-1, 1, 1, 1).to(device)
 
-        # 计算A 用来算X'AX
-        if A == None:
-            # A为单位矩阵
-            A = torch.eye(mu.size(-2)*mu.size(-1)*mu.size(-3)).to(mu.device)
+        # 添加噪声并生成样本
+        samples = mu + sigma * self.base_distribution._multiply_R(epsilon, C) / alpha
 
-        samples = samples.view(n_samples,-1)   
-        # 计算每个样本的X'AX
-        XA = samples @ A
-        XAX = XA * samples  
-        quadratic_form_values = torch.sum(XAX, axis=1) / mu.size(1) / mu.size(2)
-        # sigmoid计算满足条件X'AX < k的样本比例
-        soft = a * (k - quadratic_form_values)
-        soft_condition = torch.sigmoid(soft)
+        # 如果没有提供A，则将A定义为单位矩阵
+        if A is None:
+            A = torch.eye(mu.size(-2) * mu.size(-1) * mu.size(-3), device=device)
 
-        # 计算软条件下的样本比例
-        probabilities = torch.mean(soft_condition, axis=0)  
-        print(probabilities)
+        # 展平并计算二次型
+        samples_flat = samples.view(n_samples, -1)
+        quadratic_form_values = torch.sum((samples_flat @ A) * samples_flat, dim=1) / (mu.size(1) * mu.size(2))
+
+        # 使用sigmoid计算满足条件的软条件
+        soft_condition = torch.sigmoid(a * (k - quadratic_form_values))
+        print("chi_count",torch.sum((k - quadratic_form_values) > 0).item())
+        # 返回平均概率
+        probabilities = soft_condition.mean()
         return probabilities
 
     def _rg_loss(self, X0, Xt, C ,t): #X0为通过Xt预测的0时刻的结构
@@ -120,7 +120,8 @@ class MembraneConstraintor(conditioners.Conditioner):
         elif self.loss_type == "rg":
             alpha = self.noise_schedule.alpha(t)[:, None, None, None].to(Xt.device)
             mu = X_align - _Xt/alpha
-            loss = self.general_chi_squ_corrected(mu = mu, k = self.expect_rmsd**2,t = t)
+            loss = self.general_chi_squ_corrected(mu = mu,n_samples= self.chi_num, a = self.chi_a, k = self.expect_rmsd**2,t = t)
+            print("chi prob:",loss)
             loss = torch.log(loss)*(-1)
         return loss
 

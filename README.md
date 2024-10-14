@@ -6,7 +6,7 @@ This approach represents a significant step forward in computational structural 
 
 # Installation
 
-First make sure you have dependencies installed by running 
+First prepare a environment with python3.9 and make sure you have dependencies installed by running 
 
 ```
 pip install -r requirements.txt

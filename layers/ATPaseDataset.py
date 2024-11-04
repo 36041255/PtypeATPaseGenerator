@@ -8,7 +8,7 @@ from chroma import Chroma, Protein
 import torch.nn.functional as F
 from concurrent.futures import ProcessPoolExecutor
 import multiprocessing as mp
-# 如果你的代码中使用了CUDA，确保设置正确的进程启动方法
+
 mp.set_start_method('spawn', force=True)
 
 class ATPaseDataset(data.Dataset):
@@ -55,7 +55,6 @@ def S2O(St):
     Ot = F.one_hot(St, 20).float()
     return Ot
 
-# 将state2label转换为顶级函数
 def state2label(state, device):
     label = None
     _state = None
@@ -81,7 +80,6 @@ def state2label(state, device):
             _state = "E2"
     return label, _state
 
-# process_protein现在是一个顶级函数
 def process_protein(PDB_dir, accession_id, state_str, device):
     label, state = state2label(state_str, device)
     if label is None:
